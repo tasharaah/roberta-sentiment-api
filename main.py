@@ -9,12 +9,12 @@ tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL_ID)
 
 model.config.id2label = {
-    0: "NEGATIVE",
-    1: "POSITIVE",
+    "LABEL_0" : "NEGATIVE",
+    "LABEL_1" : "POSITIVE",
 }
 model.config.label2id = {
-    "NEGATIVE": 0,
-    "POSITIVE": 1,
+    "NEGATIVE": "LABEL_0",
+    "POSITIVE": "LABEL_1",
 }
 
 model.eval()
