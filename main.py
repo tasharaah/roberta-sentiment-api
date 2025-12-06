@@ -3,10 +3,20 @@ from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 
-MODEL_ID = "tasha-raah/roberta-sentiment"  # change if needed
+MODEL_ID = "tasha-raah/roberta-sentiment"
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL_ID)
+
+model.config.id2label = {
+    0: "NEGATIVE",
+    1: "POSITIVE",
+}
+model.config.label2id = {
+    "NEGATIVE": 0,
+    "POSITIVE": 1,
+}
+
 model.eval()
 
 app = FastAPI(title="RoBERTa Sentiment API")
@@ -37,6 +47,8 @@ def predict(req: SentimentRequest):
         probs = torch.softmax(logits, dim=-1)[0]
 
     score, pred_id = torch.max(probs, dim=0)
+
+    # Use our custom mapping
     id2label = model.config.id2label
     label = id2label[int(pred_id)]
 
